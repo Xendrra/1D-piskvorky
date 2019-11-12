@@ -144,26 +144,48 @@ class Gomoku_1D(object):
             def classify(self, i: int, symbol: str):
 
                 if i > 0 and i < self._arena_size - 1:
-                    if self._arena[i-1] == self._computer_symbol and self._arena[i] == self._empty_symbol and self._arena[i+1] == self._computer_symbol:
+                    if all([
+                        self._arena[i-1] == self._computer_symbol,
+                        self._arena[i] == self._empty_symbol,
+                        self._arena[i+1] == self._computer_symbol
+                    ]):
                         self.rating[i] += 100
 
-                    if self._arena[i-1] == self._gamester_symbol and self._arena[i] == self._empty_symbol and self._arena[i+1] == self._gamester_symbol:
+                    if all([self._arena[i-1] == self._gamester_symbol,
+                            self._arena[i] == self._empty_symbol,
+                            self._arena[i+1] == self._gamester_symbol
+                    ]):
                         self.rating[i] += 50
 
-                    if self._arena[i-1] == self._empty_symbol and self._arena[i] == self._gamester_symbol and self._arena[i+1] == self._empty_symbol:
+                    if all([self._arena[i-1] == self._empty_symbol,
+                            self._arena[i] == self._gamester_symbol,
+                            self._arena[i+1] == self._empty_symbol
+                    ]):
                         self.rating[i-1] += 25
                         self.rating[i+1] += 25
 
-                    if self._arena[i-1] == self._empty_symbol and self._arena[i] == self._gamester_symbol and self._arena[i+1] == self._gamester_symbol:
+                    if all([self._arena[i-1] == self._empty_symbol,
+                            self._arena[i] == self._gamester_symbol,
+                            self._arena[i+1] == self._gamester_symbol
+                    ]):
                         self.rating[i-1] += 50
 
-                    if self._arena[i-1] == self._gamester_symbol and self._arena[i] == self._gamester_symbol and self._arena[i+1] == self._empty_symbol:
+                    if all([self._arena[i-1] == self._gamester_symbol,
+                            self._arena[i] == self._gamester_symbol,
+                            self._arena[i+1] == self._empty_symbol
+                    ]):
                         self.rating[i+1] += 50
 
-                    if self._arena[i-1] == self._empty_symbol and self._arena[i] == self._computer_symbol and self._arena[i+1] == self._computer_symbol:
+                    if all([self._arena[i-1] == self._empty_symbol,
+                            self._arena[i] == self._computer_symbol,
+                            self._arena[i+1] == self._computer_symbol
+                    ]):
                         self.rating[i-1] += 100
 
-                    if self._arena[i-1] == self._computer_symbol and self._arena[i] == self._computer_symbol and self._arena[i+1] == self._empty_symbol:
+                    if all([self._arena[i-1] == self._computer_symbol,
+                            self._arena[i] == self._computer_symbol,
+                            self._arena[i+1] == self._empty_symbol
+                    ]):
                         self.rating[i+1] += 100
 
                 if symbol == self._gamester_symbol:
