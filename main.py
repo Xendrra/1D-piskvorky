@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from colorama import Fore, Style, init
+
+init()
 
 class Gomoku_1D(object):
     """
@@ -16,8 +19,8 @@ class Gomoku_1D(object):
         """
         Inicializační metoda.
         """
-        self._gamester_symbol = gamester_symbol
-        self._computer_symbol = computer_symbol
+        self._gamester_symbol = f'{Fore.RED}{gamester_symbol}{Style.RESET_ALL}'
+        self._computer_symbol = f'{Fore.GREEN}{computer_symbol}{Style.RESET_ALL}'
         self._empty_symbol = empty_symbol
         self._arena_size = arena_size
         self._win_array = 3
@@ -67,20 +70,22 @@ class Gomoku_1D(object):
         """
         while True:
             self._lap_counter += 1
-            self.gamester_move()
-            if self.is_end_game():
-                self.show()
-                break
             self.computer_move()
             self.show()
             if self.is_end_game():
+                break
+            self.gamester_move()
+            if self.is_end_game():
+                self.show()
                 break
 
     def show(self):
         """
         Zobrazí arénu a informace o kole.
         """
-        print(f'{self._lap_counter:2d} kolo: {"".join(self._arena)}')
+        print(f'{self._lap_counter} kolo')
+        print(''.join(list(map(lambda x: '{:3d}'.format(x), list(range(1, self._arena_size + 1))))))
+        print(''.join(list(map(lambda x: '  {:}'.format(x), self._arena))))
 
     def gamester_move(self):
         """
@@ -88,7 +93,13 @@ class Gomoku_1D(object):
         """
         coordinates = None
         while coordinates is None:
-            coordinates = input('Zadej pozici >>> ')
+            coordinates = input(
+                f'Zadej pozici ∈ ⟨1; {self._arena_size + 1}⟩, kde pozice ∈ ℕ nebo q pro konec: {Fore.YELLOW}'
+            )
+            print(Style.RESET_ALL, end='')
+            if coordinates == 'q':
+                exit()
+
             if not coordinates.isdigit():
                 print('Souřadnice nemá korektní formát.')
                 coordinates = None
@@ -143,6 +154,9 @@ class Gomoku_1D(object):
 
             def classify(self, i: int, symbol: str):
 
+                if not self._gamester_symbol in self._arena:
+                    self.rating[int(self._arena_size/2)] += 100
+
                 if i > 0 and i < self._arena_size - 1:
                     if all([
                         self._arena[i-1] == self._computer_symbol,
@@ -187,6 +201,23 @@ class Gomoku_1D(object):
                             self._arena[i+1] == self._empty_symbol
                     ]):
                         self.rating[i+1] += 100
+
+                if i > 1 and i < self._arena_size - 2:
+                    if all([self._arena[i-2] == self._gamester_symbol,
+                            self._arena[i-1] == self._empty_symbol,
+                            self._arena[i] == self._empty_symbol,
+                            self._arena[i+1] == self._empty_symbol,
+                            self._arena[i+2] == self._gamester_symbol
+                    ]):
+                        self.rating[i+1] += 20
+
+                    if all([self._arena[i-2] == self._computer_symbol,
+                            self._arena[i-1] == self._empty_symbol,
+                            self._arena[i] == self._empty_symbol,
+                            self._arena[i+1] == self._empty_symbol,
+                            self._arena[i+2] == self._computer_symbol
+                            ]):
+                        self.rating[i+1] += 10
 
                 if symbol == self._gamester_symbol:
                     self.gamester_cnt += 1
